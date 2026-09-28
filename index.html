@@ -249,16 +249,15 @@
   .about-stat-label{ font-size:11px; color:rgba(255,251,247,.7); margin-top:2px; line-height:1.4; }
 
   .notepad{
-    background:var(--paper-raised); border-radius:var(--radius-md); box-shadow:var(--shadow);
-    padding:34px 34px 34px 52px; position:relative; overflow:hidden;
-    background-image: repeating-linear-gradient(var(--paper-raised) 0 27px, var(--line) 27px 28px);
-    background-position: 0 78px;
-  }
-  .notepad::before{ content:""; position:absolute; top:0; bottom:0; left:36px; width:2px; background:var(--highlight-soft); }
-  .notepad-spirals{ position:absolute; left:12px; top:20px; bottom:20px; display:flex; flex-direction:column; justify-content:space-between; }
-  .notepad-spirals span{ width:9px; height:9px; border-radius:100%; border:2px solid var(--line-strong); background:var(--paper); display:block; }
-  .notepad-text p{ color:var(--ink-soft); font-size:15px; line-height:28px; }
-  .notepad-text p + p{ margin-top:0; }
+  background:var(--paper-raised); border-radius:var(--radius-md); box-shadow:var(--shadow);
+  padding:34px 34px 34px 52px; position:relative; overflow:hidden;
+}
+.notepad::before{ content:""; position:absolute; top:0; bottom:0; left:36px; width:2px; background:var(--highlight-soft); }
+.notepad-spirals{ position:absolute; left:12px; top:20px; bottom:20px; display:flex; flex-direction:column; justify-content:space-between; }
+.notepad-spirals span{ width:9px; height:9px; border-radius:100%; border:2px solid var(--line-strong); background:var(--paper); display:block; }
+.notepad-text p{ color:var(--ink-soft); font-size:15px; line-height:1.7; margin:0; }
+.notepad-text p + p{ margin-top:16px; 
+}
   .about-pills{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
   .pill{
     font-family:var(--font-body); font-weight:500; font-size:12px; padding:7px 13px; border-radius:100px;
