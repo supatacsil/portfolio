@@ -266,26 +266,26 @@
   @media (max-width:820px){ .about-grid{ grid-template-columns:1fr; } .notepad{ padding-left:34px; } .notepad::before,.notepad-spirals{ display:none; } }
 
   /* ============ SERVICES ============ */
-  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
-  .service-card{
-    border-radius:var(--radius-md); padding:30px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:14px;
-    border:2px solid var(--paper-raised);
-  }
-  .service-card.c-peach{ background:var(--peach); }
-  .service-card.c-blue{ background:var(--blue); }
-  .service-card.c-lavender{ background:var(--lavender); }
-  .service-icon{
-    width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
-    background:rgba(255,255,255,.55); color:var(--wine);
-  }
-  .service-icon svg{ width:23px; height:23px; }
-  .service-card h3{ font-size:20px; color:var(--wine); }
-  .service-card p{ color:#4A3560; font-size:14.5px; line-height:1.6; }
-  .service-tag{
-    margin-top:auto; padding-top:14px; border-top:1.5px dashed rgba(73,13,40,.25);
-    font-family:var(--font-body); font-weight:500; font-size:11.5px; color:#3D2A52; line-height:1.5;
-  }
-  @media (max-width:900px){ .services-grid{ grid-template-columns:1fr; } }
+.services-grid{ display:grid; grid-template-columns:repeat(2, minmax(300px, 460px)); gap:32px; justify-content:center; }
+.service-card{
+  border-radius:var(--radius-md); padding:40px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:18px;
+  border:2px solid var(--paper-raised);
+}
+.service-card.c-peach{ background:var(--peach); }
+.service-card.c-blue{ background:var(--blue); }
+.service-card.c-lavender{ background:var(--lavender); }
+.service-icon{
+  width:58px; height:58px; border-radius:14px; display:grid; place-items:center;
+  background:rgba(255,255,255,.55); color:var(--wine);
+}
+.service-icon svg{ width:29px; height:29px; }
+.service-card h3{ font-size:24px; color:var(--wine); }
+.service-card p{ color:#4A3560; font-size:16px; line-height:1.6; }
+.service-tag{
+  margin-top:auto; padding-top:16px; border-top:1.5px dashed rgba(73,13,40,.25);
+  font-family:var(--font-body); font-weight:500; font-size:12.5px; color:#3D2A52; line-height:1.5;
+}
+@media (max-width:820px){ .services-grid{ grid-template-columns:minmax(0,460px); } }
 
   /* ============ BACKGROUND / TIMELINE ============ */
   .timeline{ display:flex; flex-direction:column; border-left:3px dashed var(--line-strong); margin-left:6px; }
