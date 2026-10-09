@@ -212,6 +212,8 @@
         align-items: flex-end;
       }
       .nav-pen {
+        --pen-body: var(--ink);
+        --pen-grip: var(--ink-soft);
         width: 40px;
         height: 45px;
         margin-left: -4px;
@@ -227,6 +229,16 @@
           grid-template-columns: min-content auto;
           align-items: end;
         }
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .nav-pen {
+          --pen-body: #5c5957;
+          --pen-grip: #7a7673;
+        }
+      }
+      :root[data-theme="dark"] .nav-pen {
+        --pen-body: #5c5957;
+        --pen-grip: #7a7673;
       }
       .nav-logo:hover .nav-pen {
         animation: pen-write 0.6s ease-in-out;
@@ -1205,17 +1217,17 @@
             <path d="M20 60 15 46h10z" fill="var(--peach)"></path>
             <path
               d="M20 59v-8"
-              stroke="var(--ink)"
+              stroke="#302e2d"
               stroke-width="1"
               stroke-linecap="round"
             ></path>
-            <circle cx="20" cy="50" r="1.2" fill="var(--ink)"></circle>
+            <circle cx="20" cy="50" r="1.2" fill="#302e2d"></circle>
             <rect
               x="15"
               y="40"
               width="10"
               height="6"
-              fill="var(--ink-soft)"
+              fill="var(--pen-grip)"
             ></rect>
             <rect
               x="14.5"
@@ -1223,7 +1235,7 @@
               width="11"
               height="33"
               rx="2"
-              fill="var(--ink)"
+              fill="var(--pen-body)"
             ></rect>
             <rect
               x="15.5"
@@ -1231,7 +1243,7 @@
               width="9"
               height="7"
               rx="3"
-              fill="var(--ink)"
+              fill="var(--pen-body)"
             ></rect>
             <rect
               x="24.5"
