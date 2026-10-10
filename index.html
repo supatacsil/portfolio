@@ -1202,53 +1202,12 @@
       }
     </style>
     <script>
-      // ── Theme: dark 7pm–7am Pacific, unless the visitor picks one ──
-      (function () {
-        var KEY = "theme-susana";
-        function scheduled() {
-          var h;
-          try {
-            h = Number(
-              new Intl.DateTimeFormat("en-US", {
-                timeZone: "America/Los_Angeles",
-                hour: "numeric",
-                hourCycle: "h23",
-              }).format(new Date())
-            );
-          } catch (e) {
-            h = new Date().getHours();
-          }
-          return h >= 19 || h < 7 ? "dark" : "light";
-        }
-        // A manual choice lasts until the schedule next flips.
-        function saved() {
-          try {
-            var s = JSON.parse(localStorage.getItem(KEY));
-            if (s && s.period === scheduled() && Date.now() - s.at < 12 * 36e5)
-              return s.theme;
-          } catch (e) {}
-          return null;
-        }
-        function apply() {
-          document.documentElement.setAttribute(
-            "data-theme",
-            saved() || scheduled()
-          );
-        }
-        window.siteTheme = {
-          apply: apply,
-          choose: function (theme) {
-            try {
-              localStorage.setItem(
-                KEY,
-                JSON.stringify({ theme: theme, period: scheduled(), at: Date.now() })
-              );
-            } catch (e) {}
-            apply();
-          },
-        };
-        apply();
-      })();
+      // ── Theme: apply a saved choice before first paint ──
+      try {
+        var savedTheme = localStorage.getItem("theme-susana");
+        if (savedTheme === "dark" || savedTheme === "light")
+          document.documentElement.setAttribute("data-theme", savedTheme);
+      } catch (e) {}
     </script>
   </head>
   <body>
@@ -2113,9 +2072,11 @@
       (function () {
         var root = document.documentElement;
         var btn = document.getElementById("theme-toggle");
+        var system = window.matchMedia("(prefers-color-scheme: dark)");
 
         function isDark() {
-          return root.getAttribute("data-theme") === "dark";
+          var set = root.getAttribute("data-theme");
+          return set ? set === "dark" : system.matches;
         }
         function sync() {
           var dark = isDark();
@@ -2125,14 +2086,18 @@
           btn.setAttribute("aria-pressed", String(dark));
         }
         btn.addEventListener("click", function () {
-          window.siteTheme.choose(isDark() ? "light" : "dark");
+          var next = isDark() ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          try {
+            localStorage.setItem("theme-susana", next);
+          } catch (e) {}
           sync();
         });
-        // Re-check each minute so an open page switches at 7am / 7pm.
-        setInterval(function () {
-          window.siteTheme.apply();
-          sync();
-        }, 60000);
+        if (system.addEventListener) {
+          system.addEventListener("change", function () {
+            if (!root.getAttribute("data-theme")) sync();
+          });
+        }
         sync();
       })();
 
