@@ -579,10 +579,10 @@
       }
       .hero-tack {
         position: absolute;
-        top: -14px;
-        left: -14px;
-        width: 48px;
-        height: 48px;
+        top: -23px;
+        left: -21px;
+        width: 60px;
+        height: 60px;
         z-index: 2;
         pointer-events: none;
       }
@@ -1201,6 +1201,55 @@
         }
       }
     </style>
+    <script>
+      // ── Theme: dark 7pm–7am Pacific, unless the visitor picks one ──
+      (function () {
+        var KEY = "theme-susana";
+        function scheduled() {
+          var h;
+          try {
+            h = Number(
+              new Intl.DateTimeFormat("en-US", {
+                timeZone: "America/Los_Angeles",
+                hour: "numeric",
+                hourCycle: "h23",
+              }).format(new Date())
+            );
+          } catch (e) {
+            h = new Date().getHours();
+          }
+          return h >= 19 || h < 7 ? "dark" : "light";
+        }
+        // A manual choice lasts until the schedule next flips.
+        function saved() {
+          try {
+            var s = JSON.parse(localStorage.getItem(KEY));
+            if (s && s.period === scheduled() && Date.now() - s.at < 12 * 36e5)
+              return s.theme;
+          } catch (e) {}
+          return null;
+        }
+        function apply() {
+          document.documentElement.setAttribute(
+            "data-theme",
+            saved() || scheduled()
+          );
+        }
+        window.siteTheme = {
+          apply: apply,
+          choose: function (theme) {
+            try {
+              localStorage.setItem(
+                KEY,
+                JSON.stringify({ theme: theme, period: scheduled(), at: Date.now() })
+              );
+            } catch (e) {}
+            apply();
+          },
+        };
+        apply();
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1385,37 +1434,70 @@
           <div class="hero-scene">
             <svg class="hero-tack" viewBox="0 0 48 48" aria-hidden="true">
               <defs>
-                <radialGradient id="tack-head" cx="38%" cy="32%" r="70%">
-                  <stop offset="0" stop-color="#FFD6F0"></stop>
+                <linearGradient id="tack-body" x1="0" x2="1">
+                  <stop offset="0" stop-color="#D97DB8"></stop>
+                  <stop offset=".3" stop-color="#FFD6F0"></stop>
                   <stop offset=".55" stop-color="#FAB2E0"></stop>
-                  <stop offset="1" stop-color="#D97DB8"></stop>
+                  <stop offset="1" stop-color="#C96BA8"></stop>
+                </linearGradient>
+                <radialGradient id="tack-cap" cx="35%" cy="35%" r="75%">
+                  <stop offset="0" stop-color="#FFE4F5"></stop>
+                  <stop offset="1" stop-color="#FAB2E0"></stop>
                 </radialGradient>
+                <linearGradient id="tack-needle" x1="0" x2="1">
+                  <stop offset="0" stop-color="#8E8A88"></stop>
+                  <stop offset=".45" stop-color="#F2F0EE"></stop>
+                  <stop offset="1" stop-color="#7A7673"></stop>
+                </linearGradient>
               </defs>
               <ellipse
-                cx="28"
-                cy="30"
-                rx="13"
-                ry="11"
-                fill="rgba(48,46,45,.22)"
+                cx="33"
+                cy="34"
+                rx="11"
+                ry="4"
+                fill="rgba(48,46,45,.2)"
+                transform="rotate(-20 33 34)"
               ></ellipse>
-              <circle cx="22" cy="22" r="14" fill="url(#tack-head)"></circle>
-              <circle
-                cx="22"
-                cy="22"
-                r="8"
-                fill="none"
-                stroke="rgba(48,46,45,.12)"
-                stroke-width="1.5"
-              ></circle>
-              <ellipse
-                cx="17"
-                cy="16"
-                rx="4"
-                ry="2.6"
-                fill="#fff"
-                opacity=".7"
-                transform="rotate(-35 17 16)"
-              ></ellipse>
+              <g transform="translate(27 36) rotate(-25)">
+                <path
+                  d="M-.9-9h1.8v6.5L0 0l-.9-2.5z"
+                  fill="url(#tack-needle)"
+                ></path>
+                <path
+                  d="M-10-10v2.4a10 3.4 0 0 0 20 0V-10z"
+                  fill="#C96BA8"
+                ></path>
+                <ellipse
+                  cx="0"
+                  cy="-10"
+                  rx="10"
+                  ry="3.4"
+                  fill="url(#tack-body)"
+                ></ellipse>
+                <path
+                  d="M-6-11c2.4-2 2.8-5 2.6-8h6.8c-.2 3 .2 6 2.6 8z"
+                  fill="url(#tack-body)"
+                ></path>
+                <path
+                  d="M-8-24v3.6a8 3 0 0 0 16 0V-24z"
+                  fill="url(#tack-body)"
+                ></path>
+                <ellipse
+                  cx="0"
+                  cy="-24"
+                  rx="8"
+                  ry="3"
+                  fill="url(#tack-cap)"
+                ></ellipse>
+                <ellipse
+                  cx="-3"
+                  cy="-24.6"
+                  rx="3"
+                  ry="1"
+                  fill="#fff"
+                  opacity=".75"
+                ></ellipse>
+              </g>
             </svg>
             <img
               class="hero-photo"
@@ -2031,11 +2113,9 @@
       (function () {
         var root = document.documentElement;
         var btn = document.getElementById("theme-toggle");
-        var system = window.matchMedia("(prefers-color-scheme: dark)");
 
         function isDark() {
-          var set = root.getAttribute("data-theme");
-          return set ? set === "dark" : system.matches;
+          return root.getAttribute("data-theme") === "dark";
         }
         function sync() {
           var dark = isDark();
@@ -2045,23 +2125,14 @@
           btn.setAttribute("aria-pressed", String(dark));
         }
         btn.addEventListener("click", function () {
-          var next = isDark() ? "light" : "dark";
-          root.setAttribute("data-theme", next);
-          try {
-            localStorage.setItem("theme-susana", next);
-          } catch (e) {}
+          window.siteTheme.choose(isDark() ? "light" : "dark");
           sync();
         });
-        try {
-          var saved = localStorage.getItem("theme-susana");
-          if (saved === "dark" || saved === "light")
-            root.setAttribute("data-theme", saved);
-        } catch (e) {}
-        if (system.addEventListener) {
-          system.addEventListener("change", function () {
-            if (!root.getAttribute("data-theme")) sync();
-          });
-        }
+        // Re-check each minute so an open page switches at 7am / 7pm.
+        setInterval(function () {
+          window.siteTheme.apply();
+          sync();
+        }, 60000);
         sync();
       })();
 
@@ -2075,7 +2146,6 @@
         window.addEventListener("scroll", update, { passive: true });
         btn.addEventListener("click", function () {
           window.scrollTo({ top: 0, behavior: reduce.matches ? "auto" : "smooth" });
-          document.querySelector(".nav-logo").focus({ preventScroll: true });
         });
         update();
       })();
